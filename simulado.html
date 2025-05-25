@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Simulado ENEM - IAM</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background-color: #f9fafb; }
+    .questao { margin-bottom: 2rem; }
+  </style>
+</head>
+<body class="max-w-3xl mx-auto p-6">
+  <h1 class="text-2xl font-bold mb-6 text-center">Simulado IAM - 20 Questões</h1>
+  <form id="simuladoForm">
+    <div id="questoesContainer"></div>
+    <button type="submit" class="mt-6 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Corrigir Simulado</button>
+  </form>
+  <div id="resultado" class="mt-6"></div>
+
+  <script>
+    const questoes = [
+      // EXATAS
+      {
+        area: 'Exatas',
+        enunciado: '1. (ENEM) Um corpo de massa 2 kg está sob ação de uma força de 6 N. Qual a aceleração?',
+        opcoes: ['2 m/s²', '3 m/s²', '6 m/s²', '12 m/s²'],
+        correta: 1,
+        explicacao: 'F = m·a, então 6 = 2·a => a = 3 m/s².'
+      },
+      {
+        area: 'Exatas',
+        enunciado: '2. (ENEM) A função f(x) = x² - 4x + 3 tem raízes:',
+        opcoes: ['x = 3 e x = 1', 'x = 2 e x = -2', 'x = 1 e x = -3', 'x = 4 e x = -3'],
+        correta: 0,
+        explicacao: 'Usando Bhaskara: Δ = 16 - 12 = 4, raízes 3 e 1.'
+      },
+      // Adicione mais 8 questões de Exatas aqui
+
+      // HUMANAS
+      {
+        area: 'Humanas',
+        enunciado: '11. (ENEM) A independência do Brasil ocorreu em:',
+        opcoes: ['1822', '1889', '1808', '1798'],
+        correta: 0,
+        explicacao: 'Dom Pedro I declarou a independência em 1822.'
+      },
+      {
+        area: 'Humanas',
+        enunciado: '12. (ENEM) A filosofia de Platão é conhecida por:',
+        opcoes: ['Materialismo', 'Empirismo', 'Mundo das Ideias', 'Ceticismo radical'],
+        correta: 2,
+        explicacao: 'Platão defendia o Mundo das Ideias como a verdadeira realidade.'
+      },
+      // Adicione mais 8 questões de Humanas aqui
+    ];
+
+    const container = document.getElementById('questoesContainer');
+    questoes.forEach((q, index) => {
+      const qDiv = document.createElement('div');
+      qDiv.classList.add('questao');
+      qDiv.innerHTML = `
+        <p class="font-semibold">${q.enunciado}</p>
+        ${q.opcoes.map((op, i) => `
+          <label class="block">
+            <input type="radio" name="questao${index}" value="${i}" class="mr-2">
+            ${op}
+          </label>`).join('')}
+      `;
+      container.appendChild(qDiv);
+    });
+
+    document.getElementById('simuladoForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      let acertos = 0;
+      let resultadoHTML = '<h2 class="text-xl font-semibold mb-4">Resultado:</h2>';
+      questoes.forEach((q, index) => {
+        const marcada = document.querySelector(`input[name="questao${index}"]:checked`);
+        const escolhida = marcada ? parseInt(marcada.value) : -1;
+        const correta = q.correta === escolhida;
+        if (correta) acertos++;
+        resultadoHTML += `
+          <div class="mb-4">
+            <p><strong>${q.enunciado}</strong></p>
+            <p>Sua resposta: ${q.opcoes[escolhida] || 'Não respondida'}</p>
+            <p class="${correta ? 'text-green-600' : 'text-red-600'}">
+              ${correta ? 'Correta' : `Errada. Correta: ${q.opcoes[q.correta]}`}
+            </p>
+            <p class="text-gray-600 text-sm">Explicação: ${q.explicacao}</p>
+          </div>
+        `;
+      });
+      resultadoHTML += `<p class="mt-4 font-bold">Total de acertos: ${acertos} de ${questoes.length}</p>`;
+      document.getElementById('resultado').innerHTML = resultadoHTML;
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    });
+  </script>
+</body>
+</html>
