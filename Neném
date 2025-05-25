@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IA Educacional - ENEM</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>IA Educacional - ENEM</h1>
+    <p>Sua assistente de estudos para mandar bem no ENEM!</p>
+  </header>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", sans-serif;
+}
+
+body {
+  background: #f4f6f9;
+  color: #333;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  background-color: #4f46e5;
+  color: white;
+  text-align: center;
+  padding: 2rem;
+}
+
+main {
+  flex: 1;
+  padding: 2rem;
+  max-width: 800px;
+  margin: auto;
+}
+
+.buttons {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  margin-bottom: 2rem;
+}
+
+button {
+  padding: 1rem;
+  border: none;
+  background-color: #6366f1;
+  color: white;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background-color: #4f46e5;
+  cursor: pointer;
+}
+
+#resposta {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #ccc;
+}
+
+footer {
+  background: #e0e7ff;
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.9rem;
+}
+  <main>
+    <section class="buttons">
+      <button onclick="falarComIA()">Falar com a IA</button>
+      <button onclick="fazerSimulado()">Fazer Simulado</button>
+      <button onclick="corrigirRedacao()">Corrigir Redação</button>
+      <button onclick="indicarConteudos()">Indicar Conteúdos</button>
+    </section>
+
+    <section id="resposta">
+      <p>Selecione uma opção acima para começar.</p>
+    </section>
+  </main>
+
+  <footer>
+    <p>Desenvolvido por Paulo - 2025</p>
+  </footer>
+function falarComIA() {
+  document.getElementById('resposta').innerHTML = `
+    <h2>Chat com a IA</h2>
+    <p>Em breve você poderá conversar com a IA aqui.</p>
+  `;
+}
+
+function fazerSimulado() {
+  document.getElementById('resposta').innerHTML = `
+    <h2>Simulado ENEM</h2>
+    <p>O simulador estará disponível em breve com questões de Exatas e Humanas.</p>
+  `;
+}
+
+function corrigirRedacao() {
+  document.getElementById('resposta').innerHTML = `
+    <h2>Correção de Redação</h2>
+    <p>Envie sua redação para receber correção automática e feedback completo.</p>
+  `;
+}
+
+function indicarConteudos() {
+  document.getElementById('resposta').innerHTML = `
+    <h2>Indicação de Conteúdos</h2>
+    <p>Baseado nas suas respostas e erros, a IA vai sugerir temas de estudo aqui.</p>
+  `;
+}
+  <script src="script.js"></script>
+</body>
+</html>
