@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Corretor de Redação ENEM</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      max-width: 700px;
+      margin: 2rem auto;
+      background: #f0f0f0;
+      padding: 2rem;
+      border-radius: 1.5rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      color: #333;
+      animation: fadeIn 0.8s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      text-align: center;
+      color: #222;
+      margin-bottom: 1.5rem;
+    }
+
+    textarea {
+      width: 100%;
+      height: 200px;
+      font-size: 1rem;
+      padding: 1rem;
+      border-radius: 0.75rem;
+      border: 1px solid #ccc;
+      resize: vertical;
+      box-shadow: inset 0 1px 4px rgba(0,0,0,0.05);
+      background: #fff;
+      transition: box-shadow 0.3s ease;
+    }
+
+    textarea:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(100, 100, 255, 0.1);
+    }
+
+    button {
+      margin-top: 1.5rem;
+      padding: 0.8rem 1.6rem;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 0.6rem;
+      background: #444;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    button:hover {
+      background: #222;
+    }
+
+    h2 {
+      margin-top: 2rem;
+      color: #333;
+      font-size: 1.3rem;
+    }
+
+    .highlight {
+      color: #b30000;
+      font-weight: bold;
+    }
+
+    #resultado {
+      animation: fadeIn 0.6s ease;
+      margin-top: 1rem;
+      padding: 1rem;
+      background: #fff;
+      border-radius: 1rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    ul {
+      padding-left: 1.2rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Corretor de Redação ENEM</h1>
+  <p style="text-align:center;">Digite sua redação abaixo e clique em <strong>"Analisar"</strong>.</p>
+  <textarea id="redacao" placeholder="Digite sua redação aqui..."></textarea>
+  <button onclick="corrigirRedacao()">Analisar Redação</button>
+
+  <div id="resultado"></div>
+
+  <script>
+    function corrigirRedacao() {
+      const texto = document.getElementById('redacao').value.trim();
+      const resultado = document.getElementById('resultado');
+      resultado.innerHTML = '';
+
+      if (texto.length === 0) {
+        resultado.innerHTML = '<p class="highlight">Por favor, escreva uma redação para análise.</p>';
+        return;
+      }
+
+      const palavras = texto.split(/\s+/);
+      const contagem = palavras.length;
+      let feedback = `<h2>Análise da Redação</h2>`;
+      feedback += `<p><strong>Quantidade de palavras:</strong> ${contagem} palavras.</p>`;
+      let nota = 100;
+
+      if (contagem < 120) {
+        feedback += `<p class="highlight">Sua redação está muito curta. O ideal é ter pelo menos 120 palavras.</p>`;
+        nota -= 20;
+      } else if (contagem > 250) {
+        feedback += `<p class="highlight">Sua redação está muito longa. O ideal é não ultrapassar 250 palavras.</p>`;
+        nota -= 20;
+      } else {
+        feedback += `<p>Tamanho adequado. Ótimo!</p>`;
+      }
+
+      const paragrafos = texto.split(/\n+/).filter(p => p.trim().length > 0);
+      feedback += `<p>Você escreveu ${paragrafos.length} parágrafo(s).</p>`;
+
+      if (paragrafos.length < 3) {
+        feedback += `<p class="highlight">Faltou estrutura completa (introdução, desenvolvimento e conclusão).</p>`;
+        nota -= 20;
+      } else {
+        feedback += `<p>Boa estrutura de parágrafos.</p>`;
+      }
+
+      const conectivos = ['portanto', 'além disso', 'porém', 'entretanto', 'assim', 'porque', 'logo', 'contudo', 'por isso', 'todavia', 'devido a', 'por causa de'];
+      const textoMinusculo = texto.toLowerCase();
+      const encontrados = conectivos.filter(c => textoMinusculo.includes(c));
+
+      if (encontrados.length >= 3) {
+        feedback += `<p>Você usou conectivos como: <em>${encontrados.join(', ')}</em>. Isso ajuda na coesão.</p>`;
+      } else {
+        feedback += `<p class="highlight">Use mais conectivos para melhorar a fluidez do texto.</p>`;
+        nota -= 20;
+      }
+
+      const palavrasTema = ['meio ambiente', 'natureza', 'sustentabilidade', 'poluição', 'reciclagem', 'desmatamento', 'clima', 'ecologia'];
+      const temaEncontrado = palavrasTema.some(palavra => textoMinusculo.includes(palavra));
+
+      if (temaEncontrado) {
+        feedback += `<p>O tema parece estar bem abordado. Continue assim!</p>`;
+      } else {
+        feedback += `<p class="highlight">Não encontramos palavras relacionadas ao tema esperado. Cuidado!</p>`;
+        nota -= 20;
+      }
+
+      feedback += `<h2>Nota estimada: ${nota} / 100</h2>`;
+      resultado.innerHTML = feedback;
+    }
+  </script>
+</body>
+</html>
