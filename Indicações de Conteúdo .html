@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Indicações de Conteúdo - IA IAM ENEM</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0; padding: 1rem;
+      background-color: #f9f9f9;
+      color: #333;
+      min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center;
+    }
+
+    header {
+      max-width: 600px;
+      width: 100%;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    header h1 {
+      font-weight: 700;
+      font-size: 2rem;
+      margin-bottom: 0.2rem;
+      color: #222;
+    }
+
+    header p {
+      font-size: 1rem;
+      color: #555;
+    }
+
+    #filter-container {
+      max-width: 600px;
+      width: 100%;
+      margin-bottom: 1.5rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    select, input[type="search"] {
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+      outline-offset: 2px;
+      min-width: 180px;
+    }
+
+    #topics-list {
+      max-width: 600px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .topic-card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgb(0 0 0 / 0.05);
+      padding: 1rem 1.25rem;
+      transition: box-shadow 0.3s ease;
+      cursor: default;
+    }
+
+    .topic-card:hover {
+      box-shadow: 0 6px 12px rgb(0 0 0 / 0.10);
+    }
+
+    .topic-title {
+      font-weight: 600;
+      font-size: 1.125rem;
+      margin-bottom: 0.25rem;
+      color: #111;
+    }
+
+    .topic-desc {
+      font-size: 0.95rem;
+      color: #666;
+      line-height: 1.3;
+    }
+
+    footer {
+      margin-top: 3rem;
+      font-size: 0.9rem;
+      color: #999;
+      text-align: center;
+    }
+
+    @media(min-width: 600px) {
+      #topics-list {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Indicações de Conteúdo - IA IAM ENEM</h1>
+    <p>Escolha a área e filtre os temas para estudar com foco no ENEM.</p>
+  </header>
+
+  <section id="filter-container">
+    <select id="area-filter" aria-label="Filtrar por área">
+      <option value="all">Todas as Áreas</option>
+      <option value="exatas">Exatas</option>
+      <option value="humanas">Humanas</option>
+      <option value="linguagens">Linguagens</option>
+      <option value="natureza">Natureza</option>
+    </select>
+
+    <input type="search" id="search-box" placeholder="Buscar tema..." aria-label="Buscar tema"/>
+  </section>
+
+  <section id="topics-list" aria-live="polite" aria-atomic="true">
+    <!-- Os cards de temas serão inseridos aqui pelo JS -->
+  </section>
+
+  <footer>
+    Developed by Paulo Eduardo
+  </footer>
+
+  <script>
+    const temas = [
+      {area: 'exatas', titulo: 'Matemática - Álgebra', descricao: 'Equações, inequações, funções, progressões.'},
+      {area: 'exatas', titulo: 'Matemática - Geometria', descricao: 'Planos, sólidos, trigonometria e geometria analítica.'},
+      {area: 'exatas', titulo: 'Física - Mecânica', descricao: 'Leis de Newton, energia, movimento, gravitação.'},
+      {area: 'exatas', titulo: 'Química - Química Orgânica', descricao: 'Hidrocarbonetos, funções orgânicas, reações.'},
+
+      {area: 'humanas', titulo: 'História - Brasil Colônia', descricao: 'Colonização, exploração, movimentos sociais.'},
+      {area: 'humanas', titulo: 'Geografia - Geopolítica', descricao: 'Conflitos mundiais, organizações internacionais.'},
+      {area: 'humanas', titulo: 'Filosofia - Ética', descricao: 'Teorias éticas e moral na filosofia.'},
+      {area: 'humanas', titulo: 'Sociologia - Cidadania', descricao: 'Direitos, deveres e participação social.'},
+
+      {area: 'linguagens', titulo: 'Português - Interpretação de Texto', descricao: 'Análise, compreensão e gêneros textuais.'},
+      {area: 'linguagens', titulo: 'Inglês - Vocabulário', descricao: 'Palavras e expressões essenciais para o ENEM.'},
+
+      {area: 'natureza', titulo: 'Biologia - Genética', descricao: 'Herança genética, DNA, mutações.'},
+      {area: 'natureza', titulo: 'Química - Tabela Periódica', descricao: 'Propriedades dos elementos e classificação.'}
+    ];
+
+    const areaFilter = document.getElementById('area-filter');
+    const searchBox = document.getElementById('search-box');
+    const topicsList = document.getElementById('topics-list');
+
+    function renderTopics() {
+      const filterArea = areaFilter.value;
+      const searchTerm = searchBox.value.toLowerCase();
+
+      topicsList.innerHTML = '';
+
+      const filtered = temas.filter(topic => {
+        const matchArea = filterArea === 'all' || topic.area === filterArea;
+        const matchSearch = topic.titulo.toLowerCase().includes(searchTerm) || topic.descricao.toLowerCase().includes(searchTerm);
+        return matchArea && matchSearch;
+      });
+
+      if (filtered.length === 0) {
+        topicsList.innerHTML = '<p style="color:#555;text-align:center;">Nenhum tema encontrado.</p>';
+        return;
+      }
+
+      filtered.forEach(topic => {
+        const card = document.createElement('article');
+        card.className = 'topic-card';
+        card.setAttribute('tabindex', '0');
+        card.innerHTML = `
+          <h3 class="topic-title">${topic.titulo}</h3>
+          <p class="topic-desc">${topic.descricao}</p>
+        `;
+        topicsList.appendChild(card);
+      });
+    }
+
+    areaFilter.addEventListener('change', renderTopics);
+    searchBox.addEventListener('input', renderTopics);
+
+    // Renderiza temas na carga da página
+    renderTopics();
+  </script>
+</body>
+</html>
