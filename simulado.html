@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Simulado ENEM - IA Educacional</title>
+  <style>
+    body {
+      margin: 0; padding: 0 1rem;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #fafafa;
+      color: #222;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+    }
+
+    #simulado-start, #quiz {
+      max-width: 48rem;
+      width: 100%;
+      margin: 4rem auto 2rem auto;
+      background: white;
+      border-radius: 1rem;
+      padding: 2rem 2.5rem;
+      box-shadow: 0 10px 15px rgba(0,0,0,0.07);
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.25rem;
+      font-weight: 700;
+      color: #555555;
+      margin-bottom: 2rem;
+    }
+
+    .btn-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(200px,1fr));
+      gap: 1.5rem;
+    }
+
+    button {
+      cursor: pointer;
+      padding: 1rem 2rem;
+      border-radius: 0.75rem;
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: #222;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.05);
+      border: 1.5px solid #bbb;
+      background-color: #eee;
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+      user-select: none;
+    }
+
+    button:hover:not(:disabled) {
+      background-color: #ddd;
+      border-color: #999;
+    }
+
+    #quiz h2 {
+      color: #4b5563;
+      font-weight: 700;
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    #question-container {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      color: #2d3748;
+      min-height: 4.5rem;
+    }
+
+    #choices button {
+      display: block;
+      width: 100%;
+      background-color: #f7fafc;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      text-align: left;
+      font-size: 1rem;
+      font-weight: 500;
+      color: #2d3748;
+      cursor: pointer;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+      user-select: none;
+    }
+
+    #choices button:hover:not(:disabled) {
+      background-color: #e2e8f0;
+      border-color: #a0aec0;
+    }
+
+    #choices button.selected {
+      background-color: #64748b;
+      border-color: #475569;
+      color: white;
+      font-weight: 700;
+    }
+
+    #choices button:disabled {
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    #quiz > div:last-child {
+      margin-top: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    #progress-bar {
+      font-size: 0.9rem;
+      color: #718096;
+      flex-grow: 1;
+      text-align: center;
+    }
+
+    #explanation {
+      margin-top: 1rem;
+      font-size: 1rem;
+      color: #333;
+      text-align: left;
+      border-top: 1px solid #ddd;
+      padding-top: 1rem;
+      min-height: 3rem;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+  </style>
+</head>
+<body>
+  <!-- Tela Inicial -->
+  <section id="simulado-start">
+    <h1>Escolha o tipo de Simulado</h1>
+    <div class="btn-group">
+      <button onclick="startQuiz('exatas')" aria-label="Simulado de Exatas">Simulado de Exatas</button>
+      <button onclick="startQuiz('humanas')" aria-label="Simulado de Humanas">Simulado de Humanas</button>
+      <button onclick="startQuiz('mix')" aria-label="Simulado Misturado">Simulado Misturado</button>
+    </div>
+  </section>
+
+  <!-- Container do Simulado -->
+  <section id="quiz" class="hidden" aria-live="polite">
+    <div class="quiz-header">
+      <h2>Questão <span id="question-number">1</span> de <span id="total-questions">20</span></h2>
+    </div>
+    <div id="question-container" tabindex="0"></div>
+    <div id="choices" role="list"></div>
+
+    <div id="explanation" aria-live="polite"></div>
+
+    <div>
+      <button id="next-btn" onclick="nextQuestion()" disabled>Próxima</button>
+      <div id="progress-bar"></div>
+    </div>
+  </section>
+
+  <script>
+    const allExatas = [
+      {
+        pergunta: "Qual é o valor de x na equação 2x + 3 = 7?",
+        alternativas: ["x = 1", "x = 2", "x = 3", "x = 4"],
+        resposta: 1,
+        explicacao: "Resolvendo 2x + 3 = 7, subtraímos 3: 2x = 4, dividimos por 2: x = 2."
+      },
+      {
+        pergunta: "Qual é a derivada de f(x) = x²?",
+        alternativas: ["2x", "x", "0²", "2"],
+        resposta: 0,
+        explicacao: "A derivada de x² é 2x, pela regra do poder."
+      },
+      {
+        pergunta: "Se uma função f é tal que f(x) = 3x² - 2x + 1, qual é o valor de f(2)?",
+        alternativas: ["5", "9", "11", "15"],
+        resposta: 2,
+        explicacao: "Calculando f(2): 3(2²) - 2(2) + 1 = 12 - 4 + 1 = 9."
+      }
+      // você pode continuar adicionando mais questões aqui
+    ];
+
+    const allHumanas = [
+      {
+        pergunta: "Quem foi o presidente do Brasil durante o período da Ditadura Militar?",
+        alternativas: ["Getúlio Vargas", "Juscelino Kubitschek", "Ernesto Geisel", "Fernando Henrique Cardoso"],
+        resposta: 2,
+        explicacao: "Ernesto Geisel foi presidente durante o regime militar de 1974 a 1979."
+      },
+      {
+        pergunta: "Qual movimento literário é conhecido pelo uso da linguagem coloquial e regionalismo?",
+        alternativas: ["Romantismo", "Modernismo", "Realismo", "Barroco"],
+        resposta: 1,
+        explicacao: "O Modernismo, especialmente a 1ª fase, valorizou a linguagem coloquial e o regionalismo."
+      }
+      // adicione mais questões humanas
+    ];
+
+    let selectedQuestions = [];
+    let currentQuestion = 0;
+    let score = 0;
+    let answered = false;
+
+    function startQuiz(area) {
+      document.getElementById('simulado-start').classList.add('hidden');
+      document.getElementById('quiz').classList.remove('hidden');
+      document.getElementById('next-btn').disabled = true;
+      document.getElementById('explanation').textContent = '';
+
+      if (area === 'exatas') {
+        selectedQuestions = allExatas.slice(0, 20);
+      } else if (area === 'humanas') {
+        selectedQuestions = allHumanas.slice(0, 20);
+      } else if (area === 'mix') {
+        const mix = [...allExatas.slice(0, 10), ...allHumanas.slice(0, 10)];
+        selectedQuestions = mix.sort(() => Math.random() - 0.5);
+      }
+
+      currentQuestion = 0;
+      score = 0;
+      showQuestion();
+      updateProgress();
+    }
+
+    function showQuestion() {
+      answered = false;
+      const question = selectedQuestions[currentQuestion];
+      document.getElementById('question-number').textContent = currentQuestion + 1;
+      document.getElementById('total-questions').textContent = selectedQuestions.length;
+      document.getElementById('question-container').textContent = question.pergunta;
+
+      const choicesDiv = document.getElementById('choices');
+      choicesDiv.innerHTML = '';
+      document.getElementById('next-btn').disabled = true;
+      document.getElementById('explanation').textContent = '';
+
+      question.alternativas.forEach((alt, i) => {
+        const btn = document.createElement('button');
+        btn.textContent = alt;
+        btn.type = 'button';
+        btn.className = '';
+        btn.onclick = () => selectAnswer(i);
+        choicesDiv.appendChild(btn);
+      });
+    }
+
+    function selectAnswer(index) {
+      if (answered) return;
+      answered = true;
+
+      const question = selectedQuestions[currentQuestion];
+      const buttons = document.querySelectorAll('#choices button');
+
+      buttons.forEach((btn, i) => {
+        btn.disabled = true;
+        if (i === question.resposta) {
+          btn.classList.add('selected');
+        }
+      });
+
+      if (index === question.resposta) {
+        score
