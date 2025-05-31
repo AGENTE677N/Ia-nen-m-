@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Correção de Redação - IAM</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+</head>
+<body class="bg-gradient-to-b from-gray-100 to-gray-200 min-h-screen flex flex-col">
+
+  <main class="flex-grow flex items-center justify-center p-6">
+    <div class="bg-white shadow-xl rounded-3xl p-8 w-full max-w-3xl space-y-6">
+      <h1 class="text-2xl font-bold text-gray-800 text-center">Correção de Redação - ENEM</h1>
+      
+      <textarea id="redacao" rows="12" placeholder="Digite ou cole sua redação aqui..." class="w-full p-4 border rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800"></textarea>
+      
+      <div class="flex justify-center">
+        <button onclick="analisarRedacao()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-xl transition transform hover:scale-105">
+          Analisar Redação
+        </button>
+      </div>
+
+      <div id="loading" class="hidden flex justify-center">
+        <lottie-player src="https://assets2.lottiefiles.com/packages/lf20_usmfx6bp.json" background="transparent" speed="1" style="width: 120px; height: 120px;" loop autoplay></lottie-player>
+      </div>
+
+      <div id="resultado" class="bg-gray-100 p-4 rounded-xl hidden">
+        <h2 class="text-xl font-bold text-gray-700 mb-2">Resultado:</h2>
+        <p id="notaFinal" class="text-gray-800 mb-4"></p>
+        <ul class="list-disc list-inside text-gray-700" id="explicacao"></ul>
+      </div>
+    </div>
+  </main>
+
+  <footer class="text-center py-4 text-sm text-gray-500">Desenvolvido por Paulo Eduardo</footer>
+
+  <script>
+    function analisarRedacao() {
+      const texto = document.getElementById('redacao').value.trim();
+      const resultadoDiv = document.getElementById('resultado');
+      const loading = document.getElementById('loading');
+      const notaFinal = document.getElementById('notaFinal');
+      const explicacao = document.getElementById('explicacao');
+
+      if (!texto || texto.length < 300) {
+        alert("Por favor, escreva uma redação com pelo menos 300 caracteres.");
+        return;
+      }
+
+      resultadoDiv.classList.add('hidden');
+      loading.classList.remove('hidden');
+
+      setTimeout(() => {
+        loading.classList.add('hidden');
+        resultadoDiv.classList.remove('hidden');
+
+        // Simulação de nota (exemplo temporário)
+        const nota = Math.floor(Math.random() * 301) + 700; // nota entre 700 e 1000
+        notaFinal.textContent = `Nota Final: ${nota} / 1000`;
+
+        explicacao.innerHTML = `
+          <li><strong>Competência 1:</strong> Demonstrou domínio da norma culta da língua escrita.</li>
+          <li><strong>Competência 2:</strong> Compreendeu o tema e apresentou repertório sociocultural relevante.</li>
+          <li><strong>Competência 3:</strong> Organizou bem as ideias com progressão textual.</li>
+          <li><strong>Competência 4:</strong> Argumentou de forma consistente e articulada.</li>
+          <li><strong>Competência 5:</strong> Propôs intervenção detalhada, respeitando os direitos humanos.</li>
+        `;
+      }, 2000);
+    }
+  </script>
+</body>
+</html>
