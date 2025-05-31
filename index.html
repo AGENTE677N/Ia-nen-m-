@@ -172,6 +172,63 @@
 
 </body>
 </html>    lucide.createIcons();
+  <script>
+  // Alternar entre Login e Cadastro
+  const btnLogin = document.getElementById("btn-login");
+  const btnSignup = document.getElementById("btn-signup");
+  const formLogin = document.getElementById("form-login");
+  const formSignup = document.getElementById("form-signup");
+  const authSection = document.getElementById("auth-section");
+  const mainMenu = document.getElementById("main-menu");
+
+  btnLogin.addEventListener("click", () => {
+    btnLogin.classList.add("border-blue-500", "text-blue-400");
+    btnSignup.classList.remove("border-blue-500", "text-blue-400");
+    formLogin.classList.remove("hidden");
+    formSignup.classList.add("hidden");
+  });
+
+  btnSignup.addEventListener("click", () => {
+    btnSignup.classList.add("border-blue-500", "text-blue-400");
+    btnLogin.classList.remove("border-blue-500", "text-blue-400");
+    formSignup.classList.remove("hidden");
+    formLogin.classList.add("hidden");
+  });
+
+  // Simulação de Cadastro
+  formSignup.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const name = document.getElementById("signup-name").value;
+    const email = document.getElementById("signup-email").value;
+    const password = document.getElementById("signup-password").value;
+
+    // Armazena os dados no localStorage (simulação simples)
+    localStorage.setItem("iam_user", JSON.stringify({ name, email, password }));
+
+    alert("Conta criada com sucesso! Faça o login.");
+    formSignup.reset();
+    btnLogin.click(); // Volta para o formulário de login
+  });
+
+  // Simulação de Login
+  formLogin.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const email = document.getElementById("login-email").value;
+    const password = document.getElementById("login-password").value;
+
+    const storedUser = JSON.parse(localStorage.getItem("iam_user"));
+
+    if (storedUser && email === storedUser.email && password === storedUser.password) {
+      // Login bem-sucedido
+      authSection.classList.add("hidden");
+      mainMenu.classList.remove("hidden");
+    } else {
+      alert("Email ou senha incorretos.");
+    }
+  });
+
+  // Carregar ícones Lucide
+  lucide.createIcons();
   </script>
 </body>
 </html>
