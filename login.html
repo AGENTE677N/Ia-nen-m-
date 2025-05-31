@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login - IA IAM</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+  <style>
+    body {
+      background: #f5f7fa;
+      font-family: 'Poppins', sans-serif;
+    }
+    .input-glow:focus {
+      box-shadow: 0 0 8px #94a3b8;
+      outline: none;
+    }
+    @keyframes bounce {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-5px);
+      }
+    }
+    .btn-bounce:hover {
+      animation: bounce 0.4s;
+    }
+  </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+  <div class="bg-white rounded-3xl shadow-lg max-w-md w-full p-10 flex flex-col items-center space-y-6">
+    <lottie-player
+      src="https://assets1.lottiefiles.com/packages/lf20_qp1q7mct.json"
+      background="transparent"
+      speed="1"
+      style="width: 150px; height: 150px;"
+      loop
+      autoplay
+    ></lottie-player>
+
+    <h1 class="text-3xl font-semibold text-gray-800">Faça seu login</h1>
+    <p class="text-gray-600 text-center max-w-xs">Acesse sua conta para usar a IA IAM - ENEM.</p>
+
+    <form id="loginForm" class="w-full max-w-sm space-y-5" autocomplete="off">
+      <div>
+        <label for="loginUsername" class="block text-gray-700 mb-2 font-medium">Usuário</label>
+        <input type="text" id="loginUsername" name="loginUsername" required
+          class="w-full px-5 py-3 rounded-lg border border-gray-300 shadow-sm input-glow focus:ring-1 focus:ring-gray-400 transition"
+          placeholder="Digite seu nome de usuário" />
+      </div>
+
+      <div>
+        <label for="loginPassword" class="block text-gray-700 mb-2 font-medium">Senha</label>
+        <input type="password" id="loginPassword" name="loginPassword" required
+          class="w-full px-5 py-3 rounded-lg border border-gray-300 shadow-sm input-glow focus:ring-1 focus:ring-gray-400 transition"
+          placeholder="Digite sua senha" />
+      </div>
+
+      <button type="submit"
+        class="w-full bg-gray-700 text-white font-semibold py-3 rounded-lg shadow-md hover:bg-gray-800 transition btn-bounce">
+        Entrar
+      </button>
+
+      <p id="loginError" class="text-red-600 text-center mt-2 hidden font-semibold"></p>
+      <p class="text-gray-600 text-center mt-3">
+        Ainda não tem conta?
+        <a href="signup.html" class="text-blue-600 hover:underline font-semibold">Crie uma aqui</a>
+      </p>
+    </form>
+  </div>
+
+  <script>
+    function hashString(str) {
+      // hash simples para senha (não seguro pra produção)
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        hash = ((hash << 5) - hash) + str.charCodeAt(i);
+        hash |= 0;
+      }
+      return hash.toString();
+    }
+
+    const loginForm = document.getElementById('loginForm');
+    const loginError = document.getElementById('loginError');
+
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const username = loginForm.loginUsername.value.trim();
+      const password = loginForm.loginPassword.value;
+
+      loginError.textContent = '';
+      loginError.classList.add('hidden');
+
+      if (!username || !password) {
+        loginError.textContent = 'Preencha todos os campos.';
+        loginError.classList.remove('hidden');
+        return;
+      }
+
+      // Busca usuário no localStorage
+      const users = JSON.parse(localStorage.getItem('users') || '{}');
+      if (!users[username]) {
+        loginError.textContent = 'Usuário não encontrado.';
+        loginError.classList.remove('hidden');
+        return;
+      }
+
+      const hashedPass = hashString(password);
+      if (users[username].password !== hashedPass) {
+        loginError.textContent = 'Senha incorreta.';
+        loginError.classList.remove('hidden');
+        return;
+      }
+
+      // Salva login atual
+      localStorage.setItem('currentUser', username);
+
+      // Redireciona para index
+      window.location.href = 'index.html';
+    });
+  </script>
+
+</body>
+</html>
