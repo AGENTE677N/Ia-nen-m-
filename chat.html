@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>IA IAM - Chat</title>
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  body {
+    margin: 0;
+    background-color: #121212;
+    color: #eee;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  .chat-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    max-width: 600px;
+    margin: auto;
+    padding: 1rem;
+    overflow: hidden;
+  }
+  .messages {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 10px;
+    margin-bottom: 0.5rem;
+  }
+  .message {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    max-width: 80%;
+  }
+  .message.user {
+    margin-left: auto;
+    flex-direction: row-reverse;
+  }
+  .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #333;
+    flex-shrink: 0;
+  }
+  .avatar img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  .bubble {
+    background-color: #1e1e1e;
+    padding: 0.75rem 1rem;
+    border-radius: 1rem;
+    position: relative;
+    font-size: 1rem;
+    line-height: 1.4;
+    white-space: pre-wrap;
+  }
+  .message.user .bubble {
+    background-color: #2a7ae2;
+    color: white;
+  }
+  .typing {
+    font-style: italic;
+    color: #999;
+  }
+  form {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0 0.5rem 0.5rem 0.5rem;
+  }
+  input[type="text"] {
+    flex: 1;
+    border-radius: 9999px;
+    border: none;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    outline: none;
+    background-color: #222;
+    color: #eee;
+  }
+  button {
+    background-color: #2a7ae2;
+    border: none;
+    color: white;
+    padding: 0 1.5rem;
+    border-radius: 9999px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.25s ease;
+  }
+  button:hover {
+    background-color: #1e5fc1;
+  }
+</style>
+</head>
+<body>
+  <div class="chat-container">
+    <div class="messages" id="messages"></div>
+    <form id="chatForm" autocomplete="off">
+      <input type="text" id="inputMessage" placeholder="Digite sua mensagem..." required />
+      <button type="submit">Enviar</button>
+    </form>
+  </div>
+
+<script>
+  // URLs das fotos
+  const fotos = {
+    ia: "https://cdn-icons-png.flaticon.com/512/4712/4712027.png", // robozinho
+    user: "https://cdn-icons-png.flaticon.com/512/147/147144.png"  // desenho pessoa
+  };
+
+  // Respostas padrão aleatórias
+  const respostasIA = [
+    "Olá! Como posso ajudar você hoje?",
+    "Estou aqui para tirar suas dúvidas sobre o ENEM.",
+    "Conte comigo para estudar melhor!",
+    "Quer dicas de conteúdo? É só perguntar.",
+    "Posso corrigir redações e ajudar nos seus estudos.",
+    "Você quer dicas para Matemática, Português, ou outra matéria?",
+    "O ENEM costuma cobrar temas de atualidades, fique atento!",
+    "Se precisar, posso sugerir exercícios para praticar.",
+    "Lembre-se de revisar sempre os conteúdos mais frequentes no ENEM.",
+    "Posso ajudar com dicas para a redação também.",
+    "Qual matéria você está achando mais difícil?",
+    "Quer ajuda com técnicas de estudo ou organização do tempo?",
+    "Fique tranquilo, vamos estudar juntos!",
+    "Sempre que quiser, me pergunte sobre temas específicos.",
+    "Vou tentar ajudar da melhor forma possível!",
+    "Matemática pode ser desafiadora, mas com prática você vai dominar! Quer questões para treinar?",
+    "Português é essencial para a redação e interpretação. Quer dicas para melhorar?",
+    "Posso corrigir sua redação e dar dicas para tirar uma boa nota.",
+    "Organize seu tempo e faça revisões constantes para fixar melhor o conteúdo.",
+    "Pode perguntar o que quiser sobre o ENEM, estou aqui para ajudar!"
+  ];
+
+  // Respostas por palavra-chave (minúsculas)
+  const respostasPorPalavraChave = {
+    matematica: "Matemática é fundamental para o ENEM! Quer ajuda com algum tema específico?",
+    redacao: "A redação é a parte que mais pesa! Quer dicas para estrutura e argumentação?",
+    historia: "História é cheia de fatos importantes. Quer saber sobre algum período em especial?",
+    geografia: "Geografia ajuda a entender o mundo e as relações sociais. Sobre o que quer saber?",
+    dicas: "Dicas para estudar são sempre boas! Organize seu tempo e revise conteúdos com frequência.",
+    enem: "O ENEM avalia várias competências. Quer ajuda para se preparar melhor?",
+    cronograma: "Criar um cronograma ajuda muito. Posso ajudar a montar um se quiser.",
+    ciencias: "Ciências da Natureza envolve Física, Química e Biologia. Quer ajuda em alguma delas?",
+    literatura: "Literatura é importante para a interpretação. Posso sugerir obras para ler.",
+    linguagens: "Linguagens é a base para redação e interpretação. Quer focar em algum assunto?",
+    nota: "Quer saber como tirar uma boa nota? Posso ajudar com dicas e práticas.",
+    exercicios: "Praticar exercícios é essencial! Quer que eu indique alguns?",
+    foco: "Manter o foco é fundamental. Posso ajudar com técnicas de concentração.",
+    provas: "A prova do ENEM tem várias etapas. Quer saber como se preparar para cada uma?",
+    tempo: "Gerenciar o tempo na prova é importante. Quer dicas para isso?"
+  };
+
+  const messagesDiv = document.getElementById("messages");
+  const chatForm = document.getElementById("chatForm");
+  const inputMessage = document.getElementById("inputMessage");
+
+  // Cria uma mensagem no chat
+  function criarMensagem(texto, remetente) {
+    const msgDiv = document.createElement("div");
+    msgDiv.classList.add("message", remetente);
+
+    const avatarDiv = document.createElement("div");
+    avatarDiv.classList.add("avatar");
+    const img = document.createElement("img");
+    img.src = fotos[remetente];
+    img.alt = remetente === "ia" ? "IA IAM" : "Você";
+    avatarDiv.appendChild(img);
+
+    const bubbleDiv = document.createElement("div");
+    bubbleDiv.classList.add("bubble");
+    bubbleDiv.textContent = texto;
+
+    msgDiv.appendChild(avatarDiv);
+    msgDiv.appendChild(bubbleDiv);
+
+    messagesDiv.appendChild(msgDiv);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  }
+
+  // Simula digitação da IA
+  function iaDigitando(resposta, delay = 1500) {
+    const typingDiv = document.createElement("div");
+    typingDiv.classList.add("message", "ia");
+
+    const avatarDiv = document.createElement("div");
+    avatarDiv.classList.add("avatar");
+    const img = document.createElement("img");
+    img.src = fotos.ia;
+    img.alt = "IA IAM";
+    avatarDiv.appendChild(img);
+
+    const bubbleDiv = document.createElement("div");
+    bubbleDiv.classList.add("bubble", "typing");
+    bubbleDiv.textContent = "Digitando...";
+
+    typingDiv.appendChild(avatarDiv);
+    typingDiv.appendChild(bubbleDiv);
+
+    messagesDiv.appendChild(typingDiv);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+    return new Promise(resolve => {
+      setTimeout(() => {
+        bubbleDiv.textContent = resposta;
+        bubbleDiv.classList.remove("typing");
+        resolve();
+      }, delay);
+    });
+  }
+
+  // Função para responder IA com base em palavra-chave ou resposta aleatória
+  function responderIA(pergunta) {
+    const texto = pergunta.toLowerCase();
+
+    // Procura por palavra-chave
+    for (const chave in respostasPorPalavraChave) {
+      if (texto.includes(chave)) {
+        return respostasPorPalavraChave[chave];
+      }
+    }
+    // Se nenhuma palavra-chave bateu, retorna resposta aleatória
+    const index = Math.floor(Math.random() * respostasIA.length);
+    return respostasIA[index];
+  }
+
+  // Evento de envio do formulário
+  chatForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const textoUsuario = inputMessage.value.trim();
+    if (!textoUsuario) return;
+
+    criarMensagem(textoUsuario, "user");
+    inputMessage.value = "";
+    inputMessage.disabled = true;
+    chatForm.querySelector("button").disabled = true;
+
+    const resposta = responderIA(textoUsuario);
+    await iaDigitando(resposta);
+
+    inputMessage.disabled = false;
+    chatForm.querySelector("button").disabled = false;
+    inputMessage.focus();
+  });
+
+  // Mensagem inicial da IA
+  window.onload = () => {
+    iaDigitando("Olá! Eu sou a IA IAM, sua assistente para o ENEM. Como posso ajudar?");
+  };
+</script>
+<script>lucide.createIcons();</script>
+</body>
+</html>
