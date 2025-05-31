@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Criar Conta - IA IAM</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+  <style>
+    body {
+      background: #f5f7fa;
+      font-family: 'Poppins', sans-serif;
+    }
+    .input-glow:focus {
+      box-shadow: 0 0 8px #94a3b8;
+      outline: none;
+    }
+    @keyframes bounce {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-5px);
+      }
+    }
+    .btn-bounce:hover {
+      animation: bounce 0.4s;
+    }
+  </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+  <div class="bg-white rounded-3xl shadow-lg max-w-md w-full p-10 flex flex-col items-center space-y-6">
+    <lottie-player
+      src="https://assets2.lottiefiles.com/packages/lf20_0yfsb3a1.json"
+      background="transparent"
+      speed="1"
+      style="width: 150px; height: 150px;"
+      loop
+      autoplay
+    ></lottie-player>
+
+    <h1 class="text-3xl font-semibold text-gray-800">Crie sua conta</h1>
+    <p class="text-gray-600 text-center max-w-xs">Preencha os dados abaixo para criar uma nova conta e começar a usar a IA IAM.</p>
+
+    <form id="signupForm" class="w-full max-w-sm space-y-5" autocomplete="off">
+      <div>
+        <label for="username" class="block text-gray-700 mb-2 font-medium">Usuário</label>
+        <input type="text" id="username" name="username" required minlength="3"
+          class="w-full px-5 py-3 rounded-lg border border-gray-300 shadow-sm input-glow focus:ring-1 focus:ring-gray-400 transition"
+          placeholder="Escolha seu nome de usuário" />
+      </div>
+
+      <div>
+        <label for="email" class="block text-gray-700 mb-2 font-medium">E-mail</label>
+        <input type="email" id="email" name="email" required
+          class="w-full px-5 py-3 rounded-lg border border-gray-300 shadow-sm input-glow focus:ring-1 focus:ring-gray-400 transition"
+          placeholder="seuemail@exemplo.com" />
+      </div>
+
+      <div>
+        <label for="password" class="block text-gray-700 mb-2 font-medium">Senha</label>
+        <input type="password" id="password" name="password" required minlength="6"
+          class="w-full px-5 py-3 rounded-lg border border-gray-300 shadow-sm input-glow focus:ring-1 focus:ring-gray-400 transition"
+          placeholder="Crie uma senha segura" />
+      </div>
+
+      <div>
+        <label for="passwordConfirm" class="block text-gray-700 mb-2 font-medium">Confirmar Senha</label>
+        <input type="password" id="passwordConfirm" name="passwordConfirm" required minlength="6"
+          class="w-full px-5 py-3 rounded-lg border border-gray-300 shadow-sm input-glow focus:ring-1 focus:ring-gray-400 transition"
+          placeholder="Digite a senha novamente" />
+      </div>
+
+      <button type="submit"
+        class="w-full bg-gray-700 text-white font-semibold py-3 rounded-lg shadow-md hover:bg-gray-800 transition btn-bounce">
+        Criar Conta
+      </button>
+
+      <p id="errorMsg" class="text-red-600 text-center mt-2 hidden font-semibold"></p>
+      <p class="text-gray-600 text-center mt-3">
+        Já tem uma conta?
+        <a href="login.html" class="text-blue-600 hover:underline font-semibold">Faça login</a>
+      </p>
+    </form>
+  </div>
+
+  <script>
+    function hashString(str) {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        hash = ((hash << 5) - hash) + str.charCodeAt(i);
+        hash |= 0;
+      }
+      return hash.toString();
+    }
+
+    const signupForm = document.getElementById('signupForm');
+    const errorMsg = document.getElementById('errorMsg');
+
+    signupForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const username = signupForm.username.value.trim();
+      const email = signupForm.email.value.trim();
+      const password = signupForm.password.value;
+      const passwordConfirm = signupForm.passwordConfirm.value;
+
+      errorMsg.textContent = '';
+      errorMsg.classList.add('hidden');
+
+      if (password !== passwordConfirm) {
+        errorMsg.textContent = 'As senhas não coincidem.';
+        errorMsg.classList.remove('hidden');
+        return;
+      }
+
+      if (username.length < 3) {
+        errorMsg.textContent = 'O usuário deve ter ao menos 3 caracteres.';
+        errorMsg.classList.remove('hidden');
+        return;
+      }
+
+      if (password.length < 6) {
+        errorMsg.textContent = 'A senha deve ter ao menos 6 caracteres.';
+        errorMsg.classList.remove('hidden');
+        return;
+      }
+
+      let users = JSON.parse(localStorage.getItem('users') || '{}');
+
+      if(users[username]){
+        errorMsg.textContent = 'Usuário já existe. Escolha outro.';
+        errorMsg.classList.remove('hidden');
+        return;
+      }
+
+      users[username] = {
+        email,
+        password: hashString(password)
+      };
+
+      localStorage.setItem('users', JSON.stringify(users));
+
+      alert('Conta criada com sucesso! Agora faça login.');
+
+      window.location.href = 'login.html';
+    });
+  </script>
+
+</body>
+</html>
