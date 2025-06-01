@@ -10,15 +10,26 @@
 </head>
 <body class="bg-black min-h-screen flex flex-col">
 
-  <main class="flex-grow flex items-center justify-center px-4">
-    <div class="bg-gray-900 rounded-3xl shadow-2xl max-w-lg w-full p-8 animate-fade-in text-gray-100">
+  <!-- Botão Login/Cadastro no topo -->
+  <header class="bg-gray-900 p-4 text-right">
+    <button id="btn-open-auth" class="text-blue-400 hover:text-blue-600 font-semibold">
+      Login / Cadastro
+    </button>
+  </header>
 
-      <div id="auth-section">
+  <main class="flex-grow flex items-center justify-center px-4">
+
+    <div class="bg-gray-900 rounded-3xl shadow-2xl max-w-lg w-full p-8 animate-fade-in text-gray-100 relative">
+
+      <div id="auth-section" class="hidden">
 
         <!-- Aba para login/cadastro -->
         <div class="flex justify-center mb-6 space-x-8 text-lg font-semibold">
           <button id="btn-login" class="pb-2 border-b-2 border-blue-500 text-blue-400">Login</button>
           <button id="btn-signup" class="pb-2 border-b-2 border-transparent hover:border-blue-500 hover:text-blue-400">Criar Conta</button>
+          <button id="btn-close-auth" title="Fechar" class="ml-auto text-gray-400 hover:text-gray-200">
+            <i data-lucide="x" class="w-6 h-6"></i>
+          </button>
         </div>
 
         <!-- Formulário de Login -->
@@ -38,8 +49,8 @@
 
       </div>
 
-      <!-- Área das opções que aparecem após login -->
-      <div id="main-menu" class="hidden text-center space-y-6">
+      <!-- Área das opções que aparecem após login ou por padrão -->
+      <div id="main-menu" class="text-center space-y-6">
         <lottie-player
           src="https://assets1.lottiefiles.com/packages/lf20_qp1q7mct.json"
           background="transparent"
@@ -67,12 +78,11 @@
             <i data-lucide="lightbulb" class="w-5 h-5"></i> Indicações de Conteúdo
           </button>
 
-          <!-- Botão Indicação de Repertório -->
           <button onclick="location.href='repertorio.html'" class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-indigo-600 text-white rounded-xl shadow hover:bg-indigo-700 transition transform hover:scale-105">
             <i data-lucide="music" class="w-5 h-5"></i> Indicação de Repertório
           </button>
 
-          <button id="btn-logout" class="w-full mt-6 py-3 bg-red-600 rounded hover:bg-red-700 transition">Sair</button>
+          <button id="btn-logout" class="w-full mt-6 py-3 bg-red-600 rounded hover:bg-red-700 transition hidden">Sair</button>
         </div>
       </div>
 
@@ -96,7 +106,7 @@
   <script>
     lucide.createIcons();
 
-    // Para simular base de usuários no front
+    // Simulação de base de usuários no front
     const usersDB = [];
 
     const btnLoginTab = document.getElementById('btn-login');
@@ -106,6 +116,8 @@
     const authSection = document.getElementById('auth-section');
     const mainMenu = document.getElementById('main-menu');
     const btnLogout = document.getElementById('btn-logout');
+    const btnOpenAuth = document.getElementById('btn-open-auth');
+    const btnCloseAuth = document.getElementById('btn-close-auth');
 
     // Alternar entre abas login e cadastro
     btnLoginTab.addEventListener('click', () => {
@@ -120,6 +132,23 @@
       btnLoginTab.classList.remove('border-blue-500', 'text-blue-400');
       formSignup.classList.remove('hidden');
       formLogin.classList.add('hidden');
+    });
+
+    // Mostrar área de login/cadastro ao clicar no botão do topo
+    btnOpenAuth.addEventListener('click', () => {
+      authSection.style.display = 'block';
+      mainMenu.style.display = 'none';
+      btnLogout.classList.add('hidden');
+    });
+
+    // Fechar área de login/cadastro
+    btnCloseAuth.addEventListener('click', () => {
+      authSection.style.display = 'none';
+      mainMenu.style.display = 'block';
+      // Se estiver logado, mostra botão logout, senão esconde
+      if (btnLogout.dataset.logged === 'true') {
+        btnLogout.classList.remove('hidden');
+      }
     });
 
     // Função para exibir mensagem simples
@@ -146,6 +175,9 @@
       // Login bem-sucedido
       authSection.style.display = 'none';
       mainMenu.style.display = 'block';
+      btnLogout.classList.remove('hidden');
+      btnLogout.dataset.logged = 'true';
+      formLogin.reset();
     });
 
     // Cadastro
@@ -168,10 +200,20 @@
 
     // Logout
     btnLogout.addEventListener('click', () => {
-      mainMenu.style.display = 'none';
-      authSection.style.display = 'block';
+      btnLogout.classList.add('hidden');
+      btnLogout.dataset.logged = 'false';
+      mainMenu.style.display = 'block';
+      authSection.style.display = 'none';
       formLogin.reset();
       formSignup.reset();
+    });
+
+    // Inicialização: mostra menu principal, sem login obrigatório
+    window.addEventListener('load', () => {
+      authSection.style.display = 'none';
+      mainMenu.style.display = 'block';
+      btnLogout.classList.add('hidden');
+      btnLogout.dataset.logged = 'false';
     });
   </script>
 
