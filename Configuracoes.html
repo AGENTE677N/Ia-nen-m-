@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt-BR" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Configurações - IA IAM</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+  <style>
+    .fade-slide {
+      opacity: 0;
+      transform: translateY(20px);
+      animation-fill-mode: forwards;
+      animation-timing-function: ease-out;
+    }
+    .fade-slide:nth-child(1) {
+      animation-name: fadeSlideIn;
+      animation-duration: 0.5s;
+      animation-delay: 0.1s;
+    }
+    .fade-slide:nth-child(2) {
+      animation-name: fadeSlideIn;
+      animation-duration: 0.5s;
+      animation-delay: 0.3s;
+    }
+    .fade-slide:nth-child(3) {
+      animation-name: fadeSlideIn;
+      animation-duration: 0.5s;
+      animation-delay: 0.5s;
+    }
+    @keyframes fadeSlideIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    #btn-voltar:hover {
+      animation: bounce 0.6s ease;
+    }
+    @keyframes bounce {
+      0%, 100% {
+        transform: translateX(0);
+      }
+      50% {
+        transform: translateX(-6px);
+      }
+    }
+  </style>
+</head>
+<body
+  id="body"
+  class="bg-gradient-to-br from-gray-900 via-black to-gray-900 text-gray-100 min-h-screen flex flex-col transition-colors duration-500"
+>
+
+  <header
+    class="bg-gray-900 bg-opacity-90 backdrop-blur-sm p-4 flex items-center gap-4 fixed top-0 left-0 right-0 shadow-lg z-30"
+  >
+    <button
+      id="btn-voltar"
+      onclick="history.back()"
+      class="text-yellow-400 hover:text-yellow-600 flex items-center gap-2 transition-transform duration-300"
+      title="Voltar"
+    >
+      <i data-lucide="arrow-left" class="w-6 h-6"></i> Voltar
+    </button>
+    <h1 class="text-2xl font-extrabold tracking-wide select-none">Configurações</h1>
+  </header>
+
+  <main
+    class="flex-grow pt-24 px-6 max-w-xl mx-auto space-y-8 transition-colors duration-500"
+  >
+    <lottie-player
+      src="https://assets2.lottiefiles.com/packages/lf20_ydo1amjm.json"
+      background="transparent"
+      speed="1"
+      style="width: 150px; margin: 0 auto;"
+      loop
+      autoplay
+    ></lottie-player>
+
+    <p class="text-center text-gray-400 text-lg">
+      Personalize sua experiência com as configurações abaixo.
+    </p>
+
+    <section class="space-y-6">
+
+      <label
+        class="fade-slide block p-6 bg-gray-800 rounded-2xl shadow-lg cursor-pointer hover:shadow-yellow-500 transition-shadow duration-500 select-none"
+      >
+        <input
+          id="notificacoes-toggle"
+          type="checkbox"
+          class="form-checkbox text-yellow-400 w-5 h-5"
+        />
+        <span class="ml-3 text-lg">Ativar notificações</span>
+      </label>
+
+      <!-- Modo Escuro / Claro Toggle -->
+      <label
+        class="fade-slide flex items-center justify-between p-6 bg-gray-800 rounded-2xl shadow-lg cursor-pointer hover:shadow-yellow-500 transition-shadow duration-500 select-none"
+        for="darkmode-toggle"
+      >
+        <span class="text-lg">Modo escuro</span>
+        <input
+          id="darkmode-toggle"
+          type="checkbox"
+          class="toggle-checkbox hidden"
+        />
+        <div
+          class="w-14 h-8 bg-gray-600 rounded-full relative transition-colors duration-300"
+        >
+          <div
+            id="toggle-circle"
+            class="w-6 h-6 bg-yellow-400 rounded-full absolute top-1 left-1 transition-transform duration-300"
+          ></div>
+        </div>
+      </label>
+
+      <!-- Idioma (Inglês e Espanhol desabilitados) -->
+      <div
+        class="fade-slide p-6 bg-gray-800 rounded-2xl shadow-lg select-none"
+      >
+        <span class="block mb-2 text-lg font-semibold">Idioma</span>
+        <ul class="space-y-2">
+          <li>
+            <button
+              class="text-yellow-400 underline font-semibold"
+              title="Idioma padrão"
+            >
+              Português (Brasil)
+            </button>
+          </li>
+          <li>
+            <button
+              class="text-gray-500 cursor-not-allowed line-through"
+              title="Em construção"
+              disabled
+            >
+              Inglês (EUA) — Em construção
+            </button>
+          </li>
+          <li>
+            <button
+              class="text-gray-500 cursor-not-allowed line-through"
+              title="Em construção"
+              disabled
+            >
+              Español — En construcción
+            </button>
+          </li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    lucide.createIcons();
+
+    // Toggle switch customizado para Modo Escuro / Claro
+    const darkModeToggle = document.getElementById("darkmode-toggle");
+    const toggleCircle = document.getElementById("toggle-circle");
+    const body = document.getElementById("body");
+
+    // Carrega preferencia do localStorage
+    if (localStorage.getItem("darkMode") === "false") {
+      darkModeToggle.checked = false;
+      setLightMode();
+    } else {
+      darkModeToggle.checked = true;
+      setDarkMode();
+    }
+
+    darkModeToggle.addEventListener("change", () => {
+      if (darkModeToggle.checked) {
+        setDarkMode();
+        localStorage.setItem("darkMode", "true");
+      } else {
+        setLightMode();
+        localStorage.setItem("darkMode", "false");
+      }
+    });
+
+    function setDarkMode() {
+      toggleCircle.style.transform = "translateX(26px)";
+      body.classList.remove(
+        "bg-gradient-to-br",
+        "from-white",
+        "via-gray-100",
+        "to-white",
+        "text-gray-900"
+      );
+      body.classList.add(
+        "bg-gradient-to-br",
+        "from-gray-900",
+        "via-black",
+        "to-gray-900",
+        "text-gray-100"
+      );
+    }
+
+    function setLightMode() {
+      toggleCircle.style.transform = "translateX(0)";
+      body.classList.remove(
+        "bg-gradient-to-br",
+        "from-gray-900",
+        "via-black",
+        "to-gray-900",
+        "text-gray-100"
+      );
+      body.classList.add(
+        "bg-gradient-to-br",
+        "from-white",
+        "via-gray-100",
+        "to-white",
+        "text-gray-900"
+      );
+    }
+  </script>
+</body>
+</html>
