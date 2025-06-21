@@ -3,215 +3,145 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Indicações de Conteúdo - IA IAM ENEM</title>
+  <title>IMprove – Indicações de Repertório Sociocultural</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
   <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0; padding: 1.5rem;
-      background-color: #121212;
-      color: #ddd;
-      min-height: 100vh;
-      display: flex; flex-direction: column; align-items: center;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-
-    header {
-      max-width: 650px;
-      width: 100%;
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-
-    header h1 {
-      font-weight: 800;
-      font-size: 2.5rem;
-      margin-bottom: 0.2rem;
-      color: #4f8ef7; /* azul vibrante */
-      text-shadow: 0 0 8px rgba(79, 142, 247, 0.7);
-    }
-
-    header p {
-      font-size: 1.1rem;
-      color: #bbb;
-    }
-
-    #filter-container {
-      max-width: 650px;
-      width: 100%;
-      margin-bottom: 2rem;
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    select, input[type="search"] {
-      padding: 0.65rem 1.2rem;
-      border-radius: 10px;
-      border: 1.5px solid #444;
-      font-size: 1rem;
-      outline-offset: 2px;
-      min-width: 190px;
-      background-color: #222;
-      color: #eee;
-      transition: border-color 0.3s ease;
-      box-shadow: 0 0 5px transparent;
-    }
-
-    select:hover, input[type="search"]:hover,
-    select:focus, input[type="search"]:focus {
-      border-color: #4f8ef7;
-      box-shadow: 0 0 8px #4f8ef7;
-      background-color: #1a1a1a;
-      color: #fff;
-    }
-
-    #topics-list {
-      max-width: 650px;
-      width: 100%;
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 1.25rem;
-    }
-
-    .topic-card {
-      background: #1e1e1e;
-      border-radius: 14px;
-      box-shadow: 0 6px 15px rgb(0 0 0 / 0.6);
-      padding: 1.25rem 1.75rem;
-      transition: box-shadow 0.3s ease, transform 0.2s ease;
-      cursor: default;
-      border: 1.5px solid transparent;
-      color: #ddd;
-    }
-
-    .topic-card:hover, .topic-card:focus {
-      box-shadow: 0 10px 30px rgb(79 142 247 / 0.6);
-      border-color: #4f8ef7;
-      transform: translateY(-5px);
-      outline: none;
-    }
-
-    .topic-title {
-      font-weight: 700;
-      font-size: 1.3rem;
-      margin-bottom: 0.35rem;
-      color: #4f8ef7;
-    }
-
-    .topic-desc {
-      font-size: 1rem;
-      color: #aaa;
-      line-height: 1.4;
-    }
-
-    #topics-list p {
-      color: #777;
-      font-style: italic;
-      text-align: center;
-      padding: 1rem 0;
-    }
-
-    footer {
-      margin-top: 4rem;
-      font-size: 0.9rem;
-      color: #666;
-      text-align: center;
-      user-select: none;
-    }
-
-    @media(min-width: 700px) {
-      #topics-list {
-        grid-template-columns: 1fr 1fr;
-      }
-    }
+    body { background: #1f1f2e; color: #ccc; }
+    .fade-in { opacity:0; transform: translateY(10px); animation:fadeIn .6s forwards;}
+    @keyframes fadeIn { to {opacity:1;transform: translateY(0);} }
   </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col">
 
-  <header>
-    <h1>Indicações de Conteúdo - IA IAM ENEM</h1>
-    <p>Escolha a área e filtre os temas para estudar com foco no ENEM.</p>
+  <!-- HEADER -->
+  <header class="bg-gray-800 p-5 flex justify-between items-center text-gray-300">
+    <a href="index.html" class="text-xl font-bold hover:text-indigo-400">IMprove</a>
+    <nav class="space-x-6 hidden md:flex text-gray-300 font-medium">
+      <a href="index.html" class="hover:text-indigo-400 transition">Home</a>
+      <a href="chatbot.html" class="hover:text-indigo-400 transition">Chatbot IA</a>
+      <a href="simulado.html" class="hover:text-indigo-400 transition">Simulado</a>
+      <a href="correcao.html" class="hover:text-indigo-400 transition">Correção Redação</a>
+      <a href="repertorio.html" class="hover:text-indigo-400 transition font-bold">Indicações</a>
+    </nav>
   </header>
 
-  <section id="filter-container">
-    <select id="area-filter" aria-label="Filtrar por área">
-      <option value="all">Todas as Áreas</option>
-      <option value="exatas">Exatas</option>
-      <option value="humanas">Humanas</option>
-      <option value="linguagens">Linguagens</option>
-      <option value="natureza">Natureza</option>
-    </select>
+  <!-- MOBILE MENU -->
+  <div class="bg-gray-800 p-4 text-gray-300 md:hidden flex justify-between items-center">
+    <a href="index.html" class="text-lg font-bold hover:text-indigo-400">IMprove</a>
+    <button onclick="document.getElementById('mobileMenu').classList.toggle('hidden')" aria-label="Menu" class="focus:outline-none">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <line x1="3" y1="12" x2="21" y2="12"/>
+        <line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    </button>
+  </div>
+  <nav id="mobileMenu" class="hidden bg-gray-700 text-gray-300 p-4 space-y-3 md:hidden">
+    <a href="index.html" class="block hover:text-indigo-400 transition">Home</a>
+    <a href="chatbot.html" class="block hover:text-indigo-400 transition">Chatbot IA</a>
+    <a href="simulado.html" class="block hover:text-indigo-400 transition">Simulado</a>
+    <a href="correcao.html" class="block hover:text-indigo-400 transition">Correção Redação</a>
+    <a href="repertorio.html" class="block font-bold hover:text-indigo-400 transition">Indicações</a>
+  </nav>
 
-    <input type="search" id="search-box" placeholder="Buscar tema..." aria-label="Buscar tema"/>
-  </section>
+  <!-- MAIN CONTENT -->
+  <main class="flex-grow max-w-5xl mx-auto px-6 py-10 space-y-10">
 
-  <section id="topics-list" aria-live="polite" aria-atomic="true">
-    <!-- Os cards de temas serão inseridos aqui pelo JS -->
-  </section>
+    <section class="fade-in">
+      <h1 class="text-4xl font-extrabold mb-4 text-gray-100">Indicações de Repertório Sociocultural</h1>
+      <p class="text-gray-400 max-w-3xl mb-8">
+        Aqui você encontra sugestões de filmes, livros, músicas, frases e casos reais para enriquecer sua redação e seus argumentos no ENEM.  
+        Use essas referências para construir um repertório rico, atual e diversificado.
+      </p>
+      <a href="index.html" class="inline-block px-6 py-2 bg-indigo-600 rounded text-white hover:bg-indigo-700 transition">Voltar para o início</a>
+    </section>
 
-  <footer>
-    Desenvolvido por Paulo Eduardo
+    <!-- FILMES -->
+    <section class="fade-in space-y-4">
+      <h2 class="text-2xl font-bold text-indigo-400">🎬 Filmes</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        <article class="bg-gray-800 p-5 rounded-lg shadow hover:shadow-lg transition">
+          <h3 class="font-semibold text-lg mb-2">Tempos Modernos</h3>
+          <p class="text-gray-400 text-sm">Crítica ao capitalismo e à mecanização do trabalho, refletindo sobre as condições da classe trabalhadora.</p>
+        </article>
+        <article class="bg-gray-800 p-5 rounded-lg shadow hover:shadow-lg transition">
+          <h3 class="font-semibold text-lg mb-2">Bacurau</h3>
+          <p class="text-gray-400 text-sm">Aborda identidade nacional, resistência cultural e conflitos sociais no Brasil contemporâneo.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- LIVROS -->
+    <section class="fade-in space-y-4">
+      <h2 class="text-2xl font-bold text-indigo-400">📖 Livros</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        <article class="bg-gray-800 p-5 rounded-lg shadow hover:shadow-lg transition">
+          <h3 class="font-semibold text-lg mb-2">1984 – George Orwell</h3>
+          <p class="text-gray-400 text-sm">Distopia que aborda temas de vigilância, autoritarismo e controle social.</p>
+        </article>
+        <article class="bg-gray-800 p-5 rounded-lg shadow hover:shadow-lg transition">
+          <h3 class="font-semibold text-lg mb-2">O Pequeno Príncipe – Antoine de Saint-Exupéry</h3>
+          <p class="text-gray-400 text-sm">Reflexões sobre amizade, amor e crítica à superficialidade da sociedade.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- MÚSICAS -->
+    <section class="fade-in space-y-4">
+      <h2 class="text-2xl font-bold text-indigo-400">🎵 Músicas</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        <article class="bg-gray-800 p-5 rounded-lg shadow hover:shadow-lg transition">
+          <h3 class="font-semibold text-lg mb-2">“Pra não dizer que não falei das flores” – Geraldo Vandré</h3>
+          <p class="text-gray-400 text-sm">Canção de protesto contra a ditadura militar, símbolo da resistência e luta por democracia.</p>
+        </article>
+        <article class="bg-gray-800 p-5 rounded-lg shadow hover:shadow-lg transition">
+          <h3 class="font-semibold text-lg mb-2">“Cálice” – Chico Buarque e Gilberto Gil</h3>
+          <p class="text-gray-400 text-sm">Música que denuncia a censura e a repressão política no Brasil dos anos 70.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- FRASES -->
+    <section class="fade-in space-y-4">
+      <h2 class="text-2xl font-bold text-indigo-400">🧠 Frases e Pensadores</h2>
+      <div class="space-y-4">
+        <blockquote class="bg-gray-800 p-5 rounded-lg shadow italic text-gray-300">
+          “A educação é a arma mais poderosa que você pode usar para mudar o mundo.” <br/><span class="font-bold">– Nelson Mandela</span>
+        </blockquote>
+        <blockquote class="bg-gray-800 p-5 rounded-lg shadow italic text-gray-300">
+          “O homem é a medida de todas as coisas.” <br/><span class="font-bold">– Protágoras</span>
+        </blockquote>
+      </div>
+    </section>
+
+    <!-- CASOS REAIS -->
+    <section class="fade-in space-y-4">
+      <h2 class="text-2xl font-bold text-indigo-400">🌍 Casos Reais e Atualidades</h2>
+      <div class="space-y-4">
+        <article class="bg-gray-800 p-5 rounded-lg shadow hover:shadow-lg transition">
+          <h3 class="font-semibold text-lg mb-2">Crise Climática Global</h3>
+          <p class="text-gray-400 text-sm">Debates e ações internacionais sobre aquecimento global e sustentabilidade.</p>
+        </article>
+        <article class="bg-gray-800 p-5 rounded-lg shadow hover:shadow-lg transition">
+          <h3 class="font-semibold text-lg mb-2">Movimento Black Lives Matter</h3>
+          <p class="text-gray-400 text-sm">Luta contra o racismo e pela igualdade racial, com impactos globais.</p>
+        </article>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-gray-900 p-4 text-center text-gray-500">
+    ©2025 criado por Paulo Eduardo 🚀
   </footer>
 
   <script>
-    const temas = [
-      {area: 'exatas', titulo: 'Matemática - Álgebra', descricao: 'Equações, inequações, funções, progressões.'},
-      {area: 'exatas', titulo: 'Matemática - Geometria', descricao: 'Planos, sólidos, trigonometria e geometria analítica.'},
-      {area: 'exatas', titulo: 'Física - Mecânica', descricao: 'Leis de Newton, energia, movimento, gravitação.'},
-      {area: 'exatas', titulo: 'Química - Química Orgânica', descricao: 'Hidrocarbonetos, funções orgânicas, reações.'},
-
-      {area: 'humanas', titulo: 'História - Brasil Colônia', descricao: 'Colonização, exploração, movimentos sociais.'},
-      {area: 'humanas', titulo: 'Geografia - Geopolítica', descricao: 'Conflitos mundiais, organizações internacionais.'},
-      {area: 'humanas', titulo: 'Filosofia - Ética', descricao: 'Teorias éticas e moral na filosofia.'},
-      {area: 'humanas', titulo: 'Sociologia - Cidadania', descricao: 'Direitos, deveres e participação social.'},
-
-      {area: 'linguagens', titulo: 'Português - Interpretação de Texto', descricao: 'Análise, compreensão e gêneros textuais.'},
-      {area: 'linguagens', titulo: 'Inglês - Vocabulário', descricao: 'Palavras e expressões essenciais para o ENEM.'},
-
-      {area: 'natureza', titulo: 'Biologia - Genética', descricao: 'Herança genética, DNA, mutações.'},
-      {area: 'natureza', titulo: 'Química - Tabela Periódica', descricao: 'Propriedades dos elementos e classificação.'}
-    ];
-
-    const areaFilter = document.getElementById('area-filter');
-    const searchBox = document.getElementById('search-box');
-    const topicsList = document.getElementById('topics-list');
-
-    function renderTopics() {
-      const filterArea = areaFilter.value;
-      const searchTerm = searchBox.value.toLowerCase();
-
-      topicsList.innerHTML = '';
-
-      const filtered = temas.filter(topic => {
-        const matchArea = filterArea === 'all' || topic.area === filterArea;
-        const matchSearch = topic.titulo.toLowerCase().includes(searchTerm) || topic.descricao.toLowerCase().includes(searchTerm);
-        return matchArea && matchSearch;
-      });
-
-      if (filtered.length === 0) {
-        topicsList.innerHTML = '<p>Nenhum tema encontrado.</p>';
-        return;
-      }
-
-      filtered.forEach(topic => {
-        const card = document.createElement('article');
-        card.className = 'topic-card';
-        card.setAttribute('tabindex', '0');
-        card.innerHTML = `
-          <h3 class="topic-title">${topic.titulo}</h3>
-          <p class="topic-desc">${topic.descricao}</p>
-        `;
-        topicsList.appendChild(card);
-      });
-    }
-
-    areaFilter.addEventListener('change', renderTopics);
-    searchBox.addEventListener('input', renderTopics);
-
-    // Renderiza temas na carga da página
-    renderTopics();
+    // Mobile menu toggle
+    document.querySelector('button[aria-label="Menu"]').addEventListener('click', () => {
+      document.getElementById('mobileMenu').classList.toggle('hidden');
+    });
   </script>
+
 </body>
 </html>
