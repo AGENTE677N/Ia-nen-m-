@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>IMprove – Simulado ENEM</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <style>
+    body { background: #1f1f2e; color: #ccc; }
+    .fade-in { opacity:0; transform: translateY(10px); animation:fadeIn .6s forwards;}
+    @keyframes fadeIn { to {opacity:1;transform: translateY(0);} }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- HEADER -->
+  <header class="bg-gray-800 p-5 flex justify-between items-center text-gray-300">
+    <h1 class="text-xl font-bold">IMprove • Simulado ENEM</h1>
+    <a href="index.html" class="hover:text-indigo-400">Voltar</a>
+  </header>
+
+  <!-- MAIN -->
+  <main class="flex-grow max-w-3xl mx-auto p-6 space-y-6">
+
+    <!-- Início -->
+    <section id="start" class="text-center fade-in">
+      <h2 class="text-3xl font-bold mb-4">Simulado ENEM </h2>
+      <p>Você responderá á questões: tanto de Humanas quanto de Exatas.</p>
+      <button id="startBtn" class="mt-4 px-6 py-3 bg-indigo-600 text-white rounded hover:bg-indigo-700">Iniciar simulado</button>
+    </section>
+
+    <!-- Formulário -->
+    <form id="quizForm" class="hidden space-y-8">
+
+      <!-- Questão 1 - Humanas -->
+      <section class="space-y-4 fade-in">
+        <h3 class="font-semibold text-lg">1) ENEM (Humanas)</h3>
+        <p>“Ao trazer as novas perspectivas acionadas pelos sujeitos na escrita de suas histórias, o texto apresenta uma visão positiva sobre a presença da(s):”</p>
+        <div class="grid gap-3">
+          <label class="block bg-gray-700 rounded-lg px-4 py-3 hover:bg-indigo-600 transition cursor-pointer">
+            <input type="radio" name="q1" value="a" class="hidden peer" />
+            <span class="peer-checked:text-white peer-checked:font-semibold">a) economia na formação cultural dos sujeitos.</span>
+          </label>
+          <label class="block bg-gray-700 rounded-lg px-4 py-3 hover:bg-indigo-600 transition cursor-pointer">
+            <input type="radio" name="q1" value="b" class="hidden peer" />
+            <span class="peer-checked:text-white peer-checked:font-semibold">b) manifestações isoladas nos processos de migração.</span>
+          </label>
+          <label class="block bg-gray-700 rounded-lg px-4 py-3 hover:bg-indigo-600 transition cursor-pointer">
+            <input type="radio" name="q1" value="c" class="hidden peer" />
+            <span class="peer-checked:text-white peer-checked:font-semibold">c) narrações oficiais sobre os novos fluxos migratórios.</span>
+          </label>
+          <label class="block bg-gray-700 rounded-lg px-4 py-3 hover:bg-indigo-600 transition cursor-pointer">
+            <input type="radio" name="q1" value="d" class="hidden peer" />
+            <span class="peer-checked:text-white peer-checked:font-semibold">d) abordagens midiáticas no tratamento das informações.</span>
+          </label>
+          <label class="block bg-gray-700 rounded-lg px-4 py-3 hover:bg-indigo-600 transition cursor-pointer">
+            <input type="radio" name="q1" value="e" class="hidden peer" />
+            <span class="peer-checked:text-white peer-checked:font-semibold">e) tecnologias digitais nas formas de construção da realidade.</span>
+          </label>
+        </div>
+      </section>
+
+      <!-- Questão 2 - Exatas -->
+      <section class="space-y-4 fade-in">
+        <h3 class="font-semibold text-lg">2) ENEM 2022 (Exatas)</h3>
+        <p>Uma cozinheira produz 50 docinhos esféricos de 2 cm de diâmetro. Agora ela precisa produzir 150 docinhos de 4 cm de diâmetro. Quantas porções da receita-base ela deve preparar?</p>
+        <div class="grid gap-3">
+          <label class="block bg-gray-700 rounded-lg px-4 py-3 hover:bg-indigo-600 transition cursor-pointer">
+            <input type="radio" name="q2" value="a" class="hidden peer" />
+            <span class="peer-checked:text-white peer-checked:font-semibold">a) 2</span>
+          </label>
+          <label class="block bg-gray-700 rounded-lg px-4 py-3 hover:bg-indigo-600 transition cursor-pointer">
+            <input type="radio" name="q2" value="b" class="hidden peer" />
+            <span class="peer-checked:text-white peer-checked:font-semibold">b) 3</span>
+          </label>
+          <label class="block bg-gray-700 rounded-lg px-4 py-3 hover:bg-indigo-600 transition cursor-pointer">
+            <input type="radio" name="q2" value="c" class="hidden peer" />
+            <span class="peer-checked:text-white peer-checked:font-semibold">c) 6</span>
+          </label>
+          <label class="block bg-gray-700 rounded-lg px-4 py-3 hover:bg-indigo-600 transition cursor-pointer">
+            <input type="radio" name="q2" value="d" class="hidden peer" />
+            <span class="peer-checked:text-white peer-checked:font-semibold">d) 12</span>
+          </label>
+          <label class="block bg-gray-700 rounded-lg px-4 py-3 hover:bg-indigo-600 transition cursor-pointer">
+            <input type="radio" name="q2" value="e" class="hidden peer" />
+            <span class="peer-checked:text-white peer-checked:font-semibold">e) 24</span>
+          </label>
+        </div>
+      </section>
+
+      <button type="button" id="submitBtn" class="px-6 py-3 bg-green-600 text-white rounded hover:bg-green-700">Finalizar e ver resultado</button>
+    </form>
+
+    <!-- Resultados -->
+    <section id="results" class="hidden space-y-6 fade-in">
+      <h2 class="text-2xl font-bold">Seu resultado</h2>
+      <div id="score" class="text-xl"></div>
+      <div id="feedback" class="space-y-2 text-sm text-gray-300"></div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-gray-900 p-4 text-center text-gray-500">
+    ©2025 criado por Paulo Eduardo
+  </footer>
+
+  <!-- Script -->
+  <script>
+    const startBtn = document.getElementById('startBtn');
+    const quizForm = document.getElementById('quizForm');
+    const startSection = document.getElementById('start');
+    const submitBtn = document.getElementById('submitBtn');
+    const results = document.getElementById('results');
+    const scoreEl = document.getElementById('score');
+    const feedbackEl = document.getElementById('feedback');
+
+    startBtn.onclick = () => {
+      startSection.classList.add('hidden');
+      quizForm.classList.remove('hidden');
+    };
+
+    submitBtn.onclick = () => {
+      let score = 0;
+      const a1 = quizForm.q1.value, a2 = quizForm.q2.value;
+      if (a1 === 'e') score++;
+      if (a2 === 'd') score++;
+      quizForm.classList.add('hidden');
+      results.classList.remove('hidden');
+      scoreEl.textContent = `Você acertou ${score} de 2.`;
+
+      const fb = [];
+      fb.push(a1 === 'e'
+        ? `<strong>1)</strong> ✔ Correto! O texto valoriza a presença das tecnologias digitais nas formas de contar histórias.`
+        : `<strong>1)</strong> ❌ Errado. A resposta correta era <strong>e)</strong> tecnologias digitais...`);
+      fb.push(a2 === 'd'
+        ? `<strong>2)</strong> ✔ Correto! O volume dos docinhos aumenta 8x (2³), então precisa de 3x mais quantidade e 4x mais volume, totalizando 12 porções.`
+        : `<strong>2)</strong> ❌ Errado. A resposta correta era <strong>d)</strong> 12.`);
+
+      feedbackEl.innerHTML = fb.map(p => `<p>${p}</p>`).join('');
+    };
+  </script>
+
+</body>
+</html>
