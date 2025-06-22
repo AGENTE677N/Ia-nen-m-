@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>IMprove – Correção de Redação</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <style>
+    body { background: #1f1f2e; color: #ccc; }
+    .fade-in { opacity:0; transform: translateY(10px); animation:fadeIn .6s forwards;}
+    @keyframes fadeIn { to {opacity:1;transform: translateY(0);} }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- HEADER -->
+  <header class="bg-gray-800 p-5 flex justify-between items-center text-gray-300">
+    <a href="index.html" class="text-xl font-bold hover:text-indigo-400">IMprove</a>
+    <nav class="space-x-6 hidden md:flex text-gray-300 font-medium">
+      <a href="index.html" class="hover:text-indigo-400">Home</a>
+      <a href="chatbot.html" class="hover:text-indigo-400">Chatbot IA</a>
+      <a href="simulado.html" class="hover:text-indigo-400">Simulado</a>
+      <a href="correcao.html" class="font-bold text-indigo-400">Correção Redação</a>
+      <a href="repertorio.html" class="hover:text-indigo-400">Indicações</a>
+    </nav>
+  </header>
+
+  <!-- MOBILE MENU -->
+  <div class="bg-gray-800 p-4 text-gray-300 md:hidden flex justify-between items-center">
+    <a href="index.html" class="text-lg font-bold hover:text-indigo-400">IMprove</a>
+    <button onclick="document.getElementById('mobileMenu').classList.toggle('hidden')" aria-label="Menu" class="focus:outline-none">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <line x1="3" y1="12" x2="21" y2="12"/>
+        <line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    </button>
+  </div>
+  <nav id="mobileMenu" class="hidden bg-gray-700 text-gray-300 p-4 space-y-3 md:hidden">
+    <a href="index.html" class="block hover:text-indigo-400">Home</a>
+    <a href="chatbot.html" class="block hover:text-indigo-400">Chatbot IA</a>
+    <a href="simulado.html" class="block hover:text-indigo-400">Simulado</a>
+    <a href="correcao.html" class="block font-bold text-indigo-400">Correção Redação</a>
+    <a href="repertorio.html" class="block hover:text-indigo-400">Indicações</a>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="flex-grow max-w-4xl mx-auto p-6 space-y-6">
+
+    <section class="fade-in">
+      <h1 class="text-3xl font-bold text-gray-100 mb-4">Correção de Redação ENEM</h1>
+      <p class="text-gray-400 mb-6">Cole sua redação abaixo para receber uma nota de 0 a 1000 com base nos critérios do ENEM, incluindo explicações detalhadas por competência.</p>
+      
+      <textarea id="textoRedacao" rows="12" class="w-full p-4 bg-gray-800 text-gray-100 rounded resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Cole aqui sua redação..."></textarea>
+
+      <button onclick="corrigirRedacao()" class="mt-4 px-6 py-3 bg-indigo-600 text-white rounded hover:bg-indigo-700">Corrigir Redação</button>
+    </section>
+
+    <section id="resultado" class="hidden fade-in space-y-4">
+      <h2 class="text-2xl font-bold text-green-400">Resultado da Correção</h2>
+      <div id="notaFinal" class="text-xl font-semibold text-white"></div>
+      <div id="comentarios" class="space-y-3 text-gray-300 text-sm"></div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-gray-900 p-4 text-center text-gray-500">
+    ©2025 criado por Paulo Eduardo 🚀
+  </footer>
+
+  <!-- SCRIPT -->
+  <script>
+    function corrigirRedacao() {
+      const texto = document.getElementById("textoRedacao").value.trim();
+      const resultado = document.getElementById("resultado");
+      const notaFinal = document.getElementById("notaFinal");
+      const comentarios = document.getElementById("comentarios");
+
+      if (texto.length < 300) {
+        alert("Sua redação está muito curta. Tente escrever pelo menos 300 palavras.");
+        return;
+      }
+
+      let nota = 0;
+      let feedback = [];
+
+      // Competência 1 - Norma padrão
+      const erros = texto.match(/(?:vc|tbm|pq|eh|kd|aki|num|naum|ñ)/gi);
+      const c1 = erros ? 120 : 200;
+      feedback.push(`<strong>Competência 1:</strong> ${c1} pts – ${erros ? 'Uso inadequado da norma culta em algumas partes.' : 'Excelente domínio da norma padrão.'}`);
+      nota += c1;
+
+      // Competência 2 - Compreensão do tema
+      const temPalavrasTema = /educa|socied|cidad|direito|problema|solu|família|meio ambiente|saúde|violência/gi.test(texto);
+      const c2 = temPalavrasTema ? 200 : 120;
+      feedback.push(`<strong>Competência 2:</strong> ${c2} pts – ${temPalavrasTema ? 'O texto desenvolve bem o tema proposto com argumentos relevantes.' : 'O tema foi abordado de forma superficial ou desviada.'}`);
+      nota += c2;
+
+      // Competência 3 - Coesão e estrutura
+      const conectivos = texto.match(/portanto|além disso|no entanto|logo|dessa forma|contudo|embora|porém/gi);
+      const c3 = conectivos && conectivos.length > 2 ? 200 : 120;
+      feedback.push(`<strong>Competência 3:</strong> ${c3} pts – ${c3 === 200 ? 'Boa organização textual e uso eficiente de conectivos.' : 'Faltou organização ou uso adequado de conectores.'}`);
+      nota += c3;
+
+      // Competência 4 - Repertório sociocultural
+      const repertorio = /Orwell|Mandela|Machado|Freud|Platão|filme|livro|sociólogo|filósofo/gi.test(texto);
+      const c4 = repertorio ? 200 : 120;
+      feedback.push(`<strong>Competência 4:</strong> ${c4} pts – ${repertorio ? 'Uso produtivo de repertório sociocultural na argumentação.' : 'Faltou repertório consistente ou foi usado de forma decorativa.'}`);
+      nota += c4;
+
+      // Competência 5 - Proposta de intervenção
+      const proposta = /governo|ONG|política pública|campanha|projeto|educação|mídia|ação|intervenção/gi.test(texto);
+      const c5 = proposta ? 200 : 120;
+      feedback.push(`<strong>Competência 5:</strong> ${c5} pts – ${proposta ? 'Apresenta proposta clara, viável e detalhada.' : 'Proposta ausente ou genérica demais.'}`);
+      nota += c5;
+
+      notaFinal.innerHTML = `Nota final: <span class="text-green-300">${nota}/1000</span>`;
+      comentarios.innerHTML = feedback.map(f => `<p>${f}</p>`).join("");
+      resultado.classList.remove("hidden");
+    }
+  </script>
+
+</body>
+  </html>
