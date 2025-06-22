@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>IMprove – Chatbot IA Educacional</title>
+  <style>
+    body {
+      background: #1f1f2e;
+      color: #ddd;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      margin: 0;
+      padding: 0 10px;
+      justify-content: center;
+      align-items: center;
+    }
+    main {
+      background: #2a2a3d;
+      max-width: 600px;
+      width: 100%;
+      height: 80vh;
+      display: flex;
+      flex-direction: column;
+      border-radius: 12px;
+      box-shadow: 0 0 15px #5c4d9f88;
+      padding: 16px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 10px;
+      color: #c7bfff;
+    }
+    #chatbox {
+      flex-grow: 1;
+      overflow-y: auto;
+      padding: 10px;
+      background: #1f1f2e;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 15px;
+    }
+    .msg {
+      max-width: 75%;
+      padding: 10px 14px;
+      border-radius: 18px;
+      box-shadow: 0 2px 8px #00000088;
+      line-height: 1.3;
+      opacity: 0;
+      animation: fadeInUp 0.3s forwards;
+      word-wrap: break-word;
+      white-space: pre-wrap;
+    }
+    .msg.user {
+      background: linear-gradient(135deg, #7c3aed, #4c1d95);
+      color: white;
+      align-self: flex-end;
+      border-bottom-right-radius: 4px;
+    }
+    .msg.bot {
+      background: #3b3f5c;
+      color: #ddd;
+      align-self: flex-start;
+      border-bottom-left-radius: 4px;
+    }
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+    }
+    form {
+      display: flex;
+      gap: 10px;
+    }
+    input[type="text"] {
+      flex-grow: 1;
+      padding: 12px 16px;
+      font-size: 15px;
+      border-radius: 25px;
+      border: none;
+      background: #29293d;
+      color: #eee;
+      outline: none;
+      box-shadow: inset 0 0 6px #7c3aed88;
+      transition: box-shadow 0.3s ease;
+    }
+    input[type="text"]:focus {
+      box-shadow: 0 0 12px #7c3aedcc;
+    }
+    button {
+      padding: 12px 20px;
+      background: #7c3aed;
+      border: none;
+      border-radius: 25px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background: #5b22cc;
+    }
+    /* Indicador de digitação */
+    .typing {
+      width: 60px;
+      height: 18px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-left: 8px;
+    }
+    .typing span {
+      width: 10px;
+      height: 10px;
+      background: #aaa;
+      border-radius: 50%;
+      animation: blink 1.4s infinite ease-in-out;
+      opacity: 0.4;
+    }
+    .typing span:nth-child(1) { animation-delay: 0s; }
+    .typing span:nth-child(2) { animation-delay: 0.2s; }
+    .typing span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes blink {
+      0%, 80%, 100% { opacity: 0.4; }
+      40% { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <main>
+    <h1>Chatbot IA Educacional</h1>
+    <div id="chatbox" role="log" aria-live="polite" aria-relevant="additions"></div>
+    <form id="chatForm" aria-label="Enviar pergunta">
+      <input id="userInput" type="text" placeholder="Digite sua dúvida aqui..." autocomplete="off" required />
+      <button type="submit">Enviar</button>
+    </form>
+  </main>
+
+  <script>
+    const chatbox = document.getElementById('chatbox');
+    const form = document.getElementById('chatForm');
+    const userInput = document.getElementById('userInput');
+
+    const baseConhecimento = [
+  {
+    temas: ['função do 2º grau', 'função quadrática', 'parábola'],
+    resposta: "Ótima pergunta! A função do 2º grau tem gráfico em formato de parábola. Já estudou como calcular o vértice? Quer que eu indique vídeos ou exercícios para você praticar?"
+  },
+  {
+    temas: ['revolução francesa', 'revolução', 'francesa'],
+    resposta: "A Revolução Francesa marcou o fim do Antigo Regime e a ascensão dos ideais de liberdade e igualdade. Que tal pesquisar sobre a Queda da Bastilha para entender melhor? Posso te indicar um resumo ou vídeo."
+  },
+  {
+    temas: ['equação do 1º grau', 'equação linear', 'equação'],
+    resposta: "Equações do 1º grau são aquelas que formam uma linha reta no gráfico. Já aprendeu a resolver pelo método da substituição ou comparação? Posso sugerir exercícios para praticar."
+  },
+  {
+    temas: ['redação', 'tema de redação', 'dica para redação', 'como fazer redação'],
+    resposta: "Para uma boa redação, é importante ter introdução clara, desenvolvimento com argumentos consistentes e conclusão com proposta de intervenção. Quer dicas de repertório para enriquecer sua redação?"
+  },
+  {
+    temas: ['função do 1º grau', 'função linear'],
+    resposta: "Função do 1º grau é uma função polinomial que gera uma linha reta no gráfico. Já estudou seu gráfico e coeficientes? Posso te indicar exercícios para reforçar."
+  },
+  {
+    temas: ['fotossíntese'],
+    resposta: "A fotossíntese é o processo pelo qual plantas transformam luz solar em energia química. Quer que eu te indique vídeos ou textos para aprofundar?"
+  },
+  {
+    temas: ['segurança pública', 'violência', 'crimes'],
+    resposta: "Segurança pública é tema relevante e presente no ENEM. Você já pesquisou sobre políticas públicas e prevenção? Posso sugerir fontes confiáveis para estudo."
+  },
+  {
+    temas: ['direitos humanos', 'direito', 'humanos'],
+    resposta: "Direitos humanos garantem dignidade e igualdade para todos. Que tal estudar a Declaração Universal dos Direitos Humanos? Posso indicar materiais legais para você."
+  },
+  // Novos temas adicionados:
+  {
+    temas: ['meio ambiente', 'sustentabilidade', 'ecologia'],
+    resposta: "O meio ambiente e a sustentabilidade são temas frequentes no ENEM. Já estudou sobre a importância da conservação dos recursos naturais? Posso indicar materiais e vídeos para aprofundar."
+  },
+  {
+    temas: ['globalização', 'economia global', 'mundo globalizado'],
+    resposta: "A globalização influencia a economia, cultura e política mundial. Quer que eu explique os principais impactos da globalização para o Brasil?"
+  },
+  {
+    temas: ['geometria', 'formas geométricas', 'ângulos'],
+    resposta: "Geometria é essencial para o ENEM. Você já estudou propriedades dos triângulos e cálculo de ângulos? Posso sugerir exercícios para praticar."
+  },
+  {
+    temas: ['história do brasil', 'colonização', 'independência do brasil'],
+    resposta: "A história do Brasil é vasta, incluindo colonização e independência. Quer um resumo das principais fases históricas para o ENEM?"
+  },
+  {
+    temas: ['gramática', 'ortografia', 'sintaxe'],
+    resposta: "Gramática é muito importante para a prova de Linguagens. Quer dicas para melhorar a ortografia e entender melhor a sintaxe?"
+  },
+  {
+    temas: ['literatura', 'poesia', 'romance', 'conto'],
+    resposta: "Literatura é tema recorrente. Quer sugestões de autores clássicos e contemporâneos que caem no ENEM?"
+  },
+  {
+    temas: ['química', 'reações químicas', 'tabela periódica'],
+    resposta: "Química envolve reações, tabela periódica e muito mais. Quer ajuda com algum conceito ou exercícios?"
+  },
+  {
+    temas: ['física', 'leis de newton', 'energia', 'movimento'],
+    resposta: "Física é um dos grandes desafios do ENEM. Quer que eu explique as leis de Newton ou conceitos de energia e movimento?"
+  },
+  {
+    temas: ['biologia', 'genética', 'célula', 'ecossistema'],
+    resposta: "Biologia abrange genética, célula e ecossistemas. Quer um resumo dos principais conteúdos para o ENEM?"
+  },
+  {
+    temas: ['matemática financeira', 'juros simples', 'juros compostos'],
+    resposta: "Matemática financeira cai bastante no ENEM. Quer exemplos práticos de juros simples e compostos?"
+  },
+  {
+    temas: ['política', 'democracia', 'constituição'],
+    resposta: "Política e democracia são temas essenciais para o ENEM. Quer entender melhor os direitos e deveres previstos na Constituição?"
+  }
+];
+
+    function criarMensagem(texto, remetente) {
+      const div = document.createElement('div');
+      div.className = 'msg ' + remetente;
+      div.textContent = texto;
+      return div;
+    }
+
+    function criarTyping() {
+      const div = document.createElement('div');
+      div.className = 'msg bot typing';
+      div.setAttribute('aria-label', 'Digitando...');
+      div.innerHTML = '<span></span><span></span><span></span>';
+      return div;
+    }
+
+    function responderPergunta(pergunta) {
+      const p = pergunta.toLowerCase();
+      for (const item of baseConhecimento) {
+        if (item.temas.some(tema => p.includes(tema))) return item.resposta;
+      }
+      return "Boa pergunta! Não sei exatamente a resposta, mas recomendo pesquisar em fontes confiáveis como Khan Academy, Brasil Escola ou vídeos no YouTube. Quer que eu te indique alguns links?";
+    }
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const pergunta = userInput.value.trim();
+      if (!pergunta) return;
+
+      chatbox.appendChild(criarMensagem(pergunta, 'user'));
+      userInput.value = '';
+      chatbox.scrollTop = chatbox.scrollHeight;
+
+      const typing = criarTyping();
+      chatbox.appendChild(typing);
+      chatbox.scrollTop = chatbox.scrollHeight;
+
+      setTimeout(() => {
+        chatbox.removeChild(typing);
+        const resposta = responderPergunta(pergunta);
+        chatbox.appendChild(criarMensagem(resposta, 'bot'));
+        chatbox.scrollTop = chatbox.scrollHeight;
+      }, 1300);
+    });
+  </script>
+
+</body>
+  </html>
